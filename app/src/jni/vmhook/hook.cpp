@@ -10,21 +10,32 @@
 #include <fcntl.h>
 
 #include "hook.h"
+#include "common.h"
 
 #ifndef NELEM
 #define NELEM(x)  ((int)(sizeof(x)/sizeof((x)[0])))
 #endif
 
-#ifdef LOGD
-#undef LOGD
-#endif
-#define LOGD(...)
-  
-#ifdef LOGE
-#undef LOGE
-#endif
-#define LOGE(...)
+/** for Dalvik */
+extern jboolean dalvik_setup(JNIEnv* env, int apilevel);
 
+/** for ART */
+extern jboolean art_setup(JNIEnv* env, int apilevel);
+
+static bool isArt;
+
+static jboolean setup(JNIEnv* env, jclass clazz, jboolean vm_art, jint apilevel) {
+
+	isArt = vm_art;
+
+	LOGD("vm is: %s , apilevel is: %i", (isArt ? "art" : "dalvik"), (int)apilevel);
+
+	if (isArt) {
+		return art_setup(env, (int) apilevel);
+	} else {
+		return dalvik_setup(env, (int) apilevel);
+	}
+}
 
 static jint addNative(JNIEnv *env, jobject thiz, jint add1, jint add2) {
 	return add1 + add2;
@@ -35,9 +46,9 @@ static jint subNative(JNIEnv *env, jobject thiz, jint sub1, jint sub2) {
 }
 
 static JNINativeMethod gMethods[] = {
-
-	{"addNative", "(II)I", (void*) addNative },
-	{"subNative", "(II)I", (void*) subNative }
+	{"setupNative", "(ZI)Z", (void*) setup }, 
+	{"addNative", 	"(II)I", (void*) addNative },
+	{"subNative", 	"(II)I", (void*) subNative }
 };
 
 static int register_jni(JNIEnv *env) {

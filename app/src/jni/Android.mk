@@ -29,12 +29,14 @@ endif
 
 #source file
 LOCAL_SRC_FILES:= \
-	$(LOCAL_PATH)/vmhook/hook.cpp 
+	$(LOCAL_PATH)/vmhook/hook.cpp \
+	$(LOCAL_PATH)/vmhook/dalvik/dalvik_hook.cpp \
+	$(LOCAL_PATH)/vmhook/art/art_hook.cpp
 
 #include path
 LOCAL_C_INCLUDES += \
 	$(JNI_H_INCLUDE) \
-	$(LOCAL_PATH)/vmhook/hook.h
+	$(LOCAL_PATH)/vmhook/hook.h 
 
 #LOCAL_SHARED_LIBRARIES
 LOCAL_SHARED_LIBRARIES := \
@@ -42,10 +44,12 @@ LOCAL_SHARED_LIBRARIES := \
 	libnativehelper \
 	libcutils \
 	libutils  \
-    	libdl
+	libdl
 
 #ld parameters
 LOCAL_LDFLAGS += -shared 
+
+LOCAL_LDLIBS  += -llog
 
 # disable prelink
 LOCAL_PRELINK_MODULE := false
