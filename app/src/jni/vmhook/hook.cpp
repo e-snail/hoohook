@@ -45,10 +45,22 @@ static jint subNative(JNIEnv *env, jobject thiz, jint sub1, jint sub2) {
 	return sub1 - sub2;
 }
 
+//TODO
+static jboolean hookArtMethod(JNIEnv *env, jobject thiz, jobject srcMethod, jobject destMethod) {
+	return JNI_TRUE;
+}
+
+static jboolean hookDalvikMethod(JNIEnv *env, jobject thiz, jobject srcMethod, jobject destMethod) {
+	return JNI_TRUE;
+}
+
 static JNINativeMethod gMethods[] = {
-	{"setupNative", "(ZI)Z", (void*) setup }, 
-	{"addNative", 	"(II)I", (void*) addNative },
-	{"subNative", 	"(II)I", (void*) subNative }
+	{"setupNative", 		"(ZI)Z", 	(void*) setup }, 
+	//TODO
+	{"hookArtMethod", 		"(ZI)Z", 	(void*) hookArtMethod}, 
+	{"hookDalvikMethod",	"(ZI)Z", 	(void*) hookDalvikMethod}, 
+	{"addNative", 			"(II)I", 	(void*) addNative },
+	{"subNative", 			"(II)I", 	(void*) subNative }
 };
 
 static int register_jni(JNIEnv *env) {

@@ -8,12 +8,12 @@ import roof.hoohook.jni.HookInterface;
 
 public class MainActivity extends AppCompatActivity {
 
+    HookInterface hookInterface = new HookInterface();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        HookInterface hookInterface = new HookInterface();
 
         HookInterface.setup();
 
@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textView = (TextView)findViewById(R.id.value_tv);
         textView.setText("10 + 11 = " + value1 + "   10 - 11 = " + value2);
+    }
 
+    public HookInterface hookInterface() {
+        return hookInterface;
     }
 }
