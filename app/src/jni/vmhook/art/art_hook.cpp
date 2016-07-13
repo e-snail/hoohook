@@ -19,6 +19,9 @@
 #include <android/log.h>
 #include <jni.h>
 
+#include "art.h"
+#include "../common.h"
+
 static int apilevel;
 
 extern jboolean __attribute__ ((visibility ("hidden"))) art_setup(JNIEnv* env, int level) {
@@ -26,3 +29,12 @@ extern jboolean __attribute__ ((visibility ("hidden"))) art_setup(JNIEnv* env, i
 	return JNI_TRUE;
 }
 
+extern void __attribute__ ((visibility ("hidden"))) art_setFieldFlag(JNIEnv* env, jobject field) {
+	if (apilevel > 22) {
+		setFieldFlag_6_0(env, field);
+	} else if (apilevel > 21) {
+		//setFieldFlag_5_1(env, field);
+	} else {
+		//setFieldFlag_5_0(env, field);
+	}
+}

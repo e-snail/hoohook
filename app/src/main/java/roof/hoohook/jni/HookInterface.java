@@ -34,6 +34,6 @@ public class HookInterface {
     public native int addNative(int add1, int add2);
     public native int subNative(int sub1, int sub2);
 
-    public native boolean hookArtMethod(Object src, Object target);
-    public native boolean hookDalvikMethod(Object src, Object target);
+    public native boolean hookArtMethod(Object srcClass, Object srcMethod, Object destClass, Object destMethod);
+    public native boolean hookDalvikMethod(Object srcClass, Object srcMethod, Object destClass, Object destMethod);
 }

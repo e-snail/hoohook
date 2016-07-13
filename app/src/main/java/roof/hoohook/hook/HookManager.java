@@ -72,7 +72,7 @@ public class HookManager {
                                             }
                                         }
                                         if (isMatch) {
-                                            boolean success = hookMethod(method, hookMethod);
+                                            boolean success = hookMethod(method.getDeclaringClass(), method, hookMethod.getDeclaringClass(), hookMethod);
                                             if (success) {
                                                 Log.d(TAG, "[+++] " + method.getName() + " be hooked successfully.");
                                             } else {
@@ -97,15 +97,15 @@ public class HookManager {
         }
     }
 
-    private boolean hookMethod(Method src, Method dest) {
+    private boolean hookMethod(Class srcClass, Method srcMethod, Class destClass, Method destMethod) {
 
         final String vmVersion = System.getProperty("java.vm.version");
         boolean isArt = vmVersion != null && vmVersion.startsWith("2");
 
         if (isArt) {
-            hookMethodArt(src, dest);
+            hookMethodArt(srcClass, srcMethod, destClass, destMethod);
         } else {
-            hookMethodDalvik(src, dest);
+            hookMethodDalvik(srcClass, srcMethod, destClass, destMethod);
         }
 
         return false;
@@ -113,13 +113,13 @@ public class HookManager {
 
     //FIXME
     //use method name and class name
-    private boolean hookMethodArt(Method src, Method dest) {
+    private boolean hookMethodArt(Class srcClass, Method srcMethod, Class destClass, Method destMethod) {
 
-        return hookInterface.hookArtMethod(src, dest);
+        return hookInterface.hookArtMethod(srcClass.getName(), srcMethod.getName(), destClass.getName(), destMethod.getName());
     }
 
-    private boolean hookMethodDalvik(Method src, Method dest) {
+    private boolean hookMethodDalvik(Class srcClass, Method srcMethod, Class destClass, Method destMethod) {
 
-        return hookInterface.hookDalvikMethod(src, dest);
+        return hookInterface.hookDalvikMethod(srcClass.getName(), srcMethod.getName(), destClass.getName(), destMethod.getName());
     }
 }

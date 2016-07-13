@@ -18,9 +18,11 @@
 
 /** for Dalvik */
 extern jboolean dalvik_setup(JNIEnv* env, int apilevel);
+extern void dalvik_setFieldFlag(JNIEnv* env, jobject field);
 
 /** for ART */
 extern jboolean art_setup(JNIEnv* env, int apilevel);
+extern void art_setFieldFlag(JNIEnv* env, jobject field);
 
 static bool isArt;
 
@@ -45,6 +47,14 @@ static jint subNative(JNIEnv *env, jobject thiz, jint sub1, jint sub2) {
 	return sub1 - sub2;
 }
 
+static void setFieldFlag(JNIEnv* env, jclass clazz, jobject field) {
+	if (isArt) {
+		art_setFieldFlag(env, field);
+	} else {
+		//dalvik_setFieldFlag(env, field);
+	}
+}
+
 //TODO
 static jboolean hookArtMethod(JNIEnv *env, jobject thiz, jobject srcMethod, jobject destMethod) {
 	return JNI_TRUE;
@@ -55,12 +65,13 @@ static jboolean hookDalvikMethod(JNIEnv *env, jobject thiz, jobject srcMethod, j
 }
 
 static JNINativeMethod gMethods[] = {
-	{"setupNative", 		"(ZI)Z", 	(void*) setup }, 
+	{"setupNative", 		"(ZI)Z", 							(void*) setup }, 
 	//TODO
-	{"hookArtMethod", 		"(ZI)Z", 	(void*) hookArtMethod}, 
-	{"hookDalvikMethod",	"(ZI)Z", 	(void*) hookDalvikMethod}, 
-	{"addNative", 			"(II)I", 	(void*) addNative },
-	{"subNative", 			"(II)I", 	(void*) subNative }
+	{"hookArtMethod", 		"(ZI)Z", 							(void*) hookArtMethod}, 
+	{"hookDalvikMethod",	"(ZI)Z", 							(void*) hookDalvikMethod}, 
+	{"setFieldFlag",		"(Ljava/lang/reflect/Field)V", 		(void*) setFieldFlag}, 
+	{"addNative", 			"(II)I", 							(void*) addNative },
+	{"subNative", 			"(II)I", 							(void*) subNative }
 };
 
 static int register_jni(JNIEnv *env) {

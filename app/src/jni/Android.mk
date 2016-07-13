@@ -20,7 +20,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := eng
 
 #LOCAL_CFLAGS
-LOCAL_CFLAGS += -Wall -Wextra -Wno-non-virtual-dtor -DNDEBUG -DOS_LINUX
+LOCAL_CFLAGS += -Wall -Wextra -Wno-non-virtual-dtor -DNDEBUG -DOS_LINUX -std=gnu++11 -fpermissive
 ifeq ($(WITH_SYMBOL_TABLE),true)
 	LOCAL_CFLAGS += -O0 -ggdb3 -fno-inline -g
 else 
@@ -31,12 +31,16 @@ endif
 LOCAL_SRC_FILES:= \
 	$(LOCAL_PATH)/vmhook/hook.cpp \
 	$(LOCAL_PATH)/vmhook/dalvik/dalvik_hook.cpp \
-	$(LOCAL_PATH)/vmhook/art/art_hook.cpp
+	$(LOCAL_PATH)/vmhook/art/art_hook.cpp \
+	$(LOCAL_PATH)/vmhook/art/art_method_replace_6_0.cpp
 
 #include path
 LOCAL_C_INCLUDES += \
 	$(JNI_H_INCLUDE) \
-	$(LOCAL_PATH)/vmhook/hook.h 
+	$(LOCAL_PATH)/vmhook/hook.h \
+	$(LOCAL_PATH)/vmhook/art/art_6_0.hi \
+	$(LOCAL_PATH)/vmhook/art/art.h 
+
 
 #LOCAL_SHARED_LIBRARIES
 LOCAL_SHARED_LIBRARIES := \
