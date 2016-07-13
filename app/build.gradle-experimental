@@ -1,0 +1,68 @@
+apply plugin: "com.android.model.application"
+
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.3"
+
+        defaultConfig.with {
+            applicationId = "roof.hoohook"
+            minSdkVersion.apiLevel = 14
+            targetSdkVersion.apiLevel = 23
+            versionCode = 1
+            versionName = "1.0"
+        }
+    }
+
+    android.sources {
+        main {
+            manifest.source {
+                include "./src/main/AndroidManifest.xml"
+            }
+            java.source.srcDirs += 'src/main/java'
+            res.source.srcDirs += 'src/main/res'
+            assets.source.srcDirs += 'assets'
+            jniLibs.source.srcDirs += 'jniLibs'
+
+            jni {
+                source {
+                    srcDirs += 'src/jni/vmhook/'
+                    srcDirs += 'src/jni/vmhook/art'
+                    srcDirs += 'src/jni/vmhook/dalvik'
+                }
+            }
+        }
+    }
+
+    android.ndk {
+        moduleName = "hoohook"
+        platformVersion = "23"
+
+        cppFlags.add("-I${file("src/jni/vmhook")}".toString())
+        cppFlags.add("-I${file("src/jni/vmhook/art")}".toString())
+        cppFlags.add("-I${file("src/jni/vmhook/dalvik")}".toString())
+
+        ldLibs.add("log")
+    }
+
+    android.productFlavors {
+        create ("arm7") {
+            ndk.abiFilters.add("armeabi-v7a")
+        }
+        create ("arm8") {
+            ndk.abiFilters.add("arm64-v8a")
+        }
+        create ("x86-32") {
+            ndk.abiFilters.add("x86")
+        }
+    }
+
+    android.buildTypes {
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+}
